@@ -3,10 +3,10 @@ from flask_cors import CORS
 from openai import OpenAI
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="")  # Serve static files from root
 CORS(app)
 
-# Get API key from environment variable for security
+# Get API key from environment variable
 API_KEY = os.environ.get("OPENAI_API_KEY")
 MODEL = "openai/gpt-oss-20b:free"
 
@@ -17,7 +17,9 @@ client = OpenAI(
 
 @app.route("/")
 def index():
-    return send_file("index.html")  # serve your frontend
+    # Serve index.html from the same folder
+    index_path = os.path.join(os.path.dirname(__file__), "index.html")
+    return send_file(index_path)
 
 @app.route("/chat", methods=["POST"])
 def chat():
